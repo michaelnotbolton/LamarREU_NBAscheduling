@@ -2,6 +2,8 @@
 
 #read in the string
 xystring = input("Input the stringification:")
+#encoded as a list, first index is height, 
+# second is width, the rest are blocked squares
 #xystring = "3,5,(1,1),(1,5),(2,4)"
 #xystring = "2,2,(1,1)"
 
