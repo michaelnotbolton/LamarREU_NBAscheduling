@@ -2,18 +2,25 @@
 #graphstring = input("Input:")
 graphstring = "{0: [1, 2], 1: [0, 2], 2: [0, 1]}"
 
-graph = exec(graphstring)
+graph = eval(graphstring)
 
 print(graph)
 keys = graph.keys()
 
-keyparents = {key:0 for k in keys}
-for k in keys:
-    for child in graphstring[k]:
-        keyparents[k] = child
+edges = []
+for key in keys:
+    for child in graph[key]:
+        if not(((key,child) in edges) or ((child,key) in edges)):
+            edges.append((key,child))
 
-
-#def number_of_vars():
+def number_of_vars():
     #number of edges
+    n = len(edges)
+    return n
 
-print(keyparents)
+def number_of_clauses():
+    #4 clauses for every edge
+    n = 4*number_of_vars
+    # how many clauses for each vertex?
+    
+    return n
