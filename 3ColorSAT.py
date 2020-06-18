@@ -4,7 +4,7 @@ graphstring = "{0: [1, 2], 1: [0, 2], 2: [0, 1]}"
 
 graph = eval(graphstring)
 
-print(graph)
+#print(graph)
 keys = graph.keys()
 
 edges = []
@@ -20,7 +20,7 @@ def number_of_vars():
 
 def number_of_clauses():
     #4 clauses for every edge
-    n = 4*number_of_vars
+    n = 4*number_of_vars()
     # how many clauses for each vertex?
 
     return n
@@ -30,9 +30,9 @@ variable_count = 0
 def create_cnf():
     str_cnf = ""
     str_cnf += comments()
-    str_cn += pline()
+    str_cnf += pline()
     str_cnf += "c Edge Clauses \n"
-    str_cn += edges_clauses()
+    str_cnf += edges_clauses()
     return str_cnf
 
 def comments():
@@ -47,14 +47,25 @@ def pline():
     str_pline += str(number_of_clauses()) + "\n"
     return str_pline
 
+
 def edges_clauses():
+    global variable_count
     edge_clause = ""
     for edge in edges:
-        variable_count = c
-        map = {a:c+1,b:c+2,c:c+3}
+        map = {"a":str(variable_count+1),"b":str(variable_count+2),"c":str(variable_count+3)}
+        final_key_clause = ""
         for key in map.keys():
+            key_clause = ""
             for k in map.keys():
-                if k != key:
-                    edge_clause += "-" str(k)
-                else
-        
+                if k!=key:
+                    key_clause += " -" + map[key]
+                else:
+                    key_clause += " " + map[key]
+            edge_clause += key_clause + "\n"
+            final_key_clause += " " + map[key]
+        variable_count+=3
+        edge_clause += final_key_clause + "\n"
+    return edge_clause
+
+
+print(create_cnf())
