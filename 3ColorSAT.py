@@ -33,6 +33,8 @@ def create_cnf():
     str_cnf += pline()
     str_cnf += "c Edge Clauses \n"
     str_cnf += edges_clauses()
+    str_cnf += "c Vertex Clauses \n"
+    str_cnf += vertex_clauses()
     return str_cnf
 
 def comments():
@@ -58,14 +60,17 @@ def edges_clauses():
             key_clause = ""
             for k in map.keys():
                 if k!=key:
-                    key_clause += " -" + map[key]
+                    key_clause += " -" + map[k]
                 else:
-                    key_clause += " " + map[key]
+                    key_clause += " " + map[k]
             edge_clause += key_clause + "\n"
             final_key_clause += " " + map[key]
         variable_count+=3
         edge_clause += final_key_clause + "\n"
     return edge_clause
+
+def vertex_clauses():
+    return ""
 
 
 print(create_cnf())
