@@ -92,6 +92,7 @@ def vertex_clauses():
 def print_solution(s):
     global edges
     big_s = s.split(" ") #split into variables
+    if "SAT" in big_s: big_s.remove("SAT")
     count = 0
     map_edges_to_color = {}
     var = 0
