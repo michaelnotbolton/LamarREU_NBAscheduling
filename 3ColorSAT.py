@@ -1,7 +1,6 @@
 #read in string
 #graphstring = input("Input:")
-#graphstring = "{0: [1, 2], 1: [0, 2], 2: [0, 1]}"
-graphstring = "{0: [1, 2, 3, 4, 5, 6, 7], 1: [0, 2, 3, 4, 5, 6, 7], 2: [0, 1, 3, 4, 5, 6, 7], 3: [0, 1, 2, 4, 5, 6, 7], 4: [0, 1, 2, 3, 5, 6, 7], 5: [0, 1, 2, 3, 4, 6, 7], 6: [0, 1, 2, 3, 4, 5, 7], 7: [0, 1, 2, 3, 4, 5, 6]}"
+graphstring = "{0: [1, 2], 1: [0, 2], 2: [0, 1]}"
 
 graph = eval(graphstring)
 
@@ -13,7 +12,6 @@ for key in keys:
     for child in graph[key]:
         if not(((key,child) in edges) or ((child,key) in edges)):
             edges.append((key,child))
-print(edges)
 
 def number_of_vars():
     #number of edges
@@ -26,8 +24,8 @@ def number_of_clauses():
     # how many clauses for each vertex?
 
     return n
-
-VARIABLE_COUNT = 0
+    
+variable_count = 0
 #compile CNF piece by piece
 def create_cnf():
     str_cnf = ""
@@ -40,7 +38,8 @@ def create_cnf():
     return str_cnf
 
 def comments():
-    str_comments = "c Practice CNF \n"
+    str_comments = "\
+    c Practice CNF"
     return str_comments
 
 #construct p as p + type + #variable + #clauses
@@ -52,10 +51,10 @@ def pline():
 
 
 def edges_clauses():
-    global VARIABLE_COUNT
+    global variable_count
     edge_clause = ""
     for edge in edges:
-        map = {"a":str(VARIABLE_COUNT+1),"b":str(VARIABLE_COUNT+2),"c":str(VARIABLE_COUNT+3)}
+        map = {"a":str(variable_count+1),"b":str(variable_count+2),"c":str(variable_count+3)}
         final_key_clause = ""
         for key in map.keys():
             key_clause = ""
@@ -66,17 +65,12 @@ def edges_clauses():
                     key_clause += " " + map[k]
             edge_clause += key_clause + "\n"
             final_key_clause += " " + map[key]
-        VARIABLE_COUNT+=3
+        variable_count+=3
         edge_clause += final_key_clause + "\n"
     return edge_clause
 
 def vertex_clauses():
-    global VARIABLE_COUNT
-    v_clause_str = ""
-    for edge in edges:
-        #each edge has 3 color variables
-        #each color being 3%1, 3%2, 3%3
-        VARIABLE_COUNT=3
-    return v_clause_str
+    return ""
+
 
 print(create_cnf())
