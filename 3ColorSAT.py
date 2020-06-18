@@ -22,7 +22,7 @@ def number_of_vars():
     n = len(edges)
     return n
 
-clause_count = number_of_vars()*4
+clause_count = len(edges)*4
 def number_of_clauses():
     global clause_count
     return clause_count
@@ -83,10 +83,32 @@ def vertex_clauses():
             for j in range(0,len(incidents)):
                 for k in range(j+1,len(incidents)):
                     for l in range(k+1,len(incidents)):
-                        vertex_clause += "-" + str((3*(j+1))+0) + " -" + str((3*(k+1))+0) + " -" + str((3*(l+1))+0) + " 0 \n"
-                        vertex_clause += "-" + str((3*(j+1))+1) + " -" + str((3*(k+1))+1) + " -" + str((3*(l+1))+1) + " 0 \n"
-                        vertex_clause += "-" + str((3*(j+1))+2) + " -" + str((3*(k+1))+2) + " -" + str((3*(l+1))+2) + " 0 \n"
+                        vertex_clause += "-" + str(3*incidents[j]+1) + " -" + str(3*incidents[k]+1) + " -" + str(3*incidents[l]+1) + " 0\n"
+                        vertex_clause += "-" + str(3*incidents[j]+2) + " -" + str(3*incidents[k]+2) + " -" + str(3*incidents[l]+2) + " 0\n"
+                        vertex_clause += "-" + str(3*incidents[j]+3) + " -" + str(3*incidents[k]+3) + " -" + str(3*incidents[l]+3) + " 0\n"
                         clause_count += 3
     return vertex_clause
 
+def print_solution(s):
+    global edges
+    big_s = s.split(" ") #split into variables
+    count = 0
+    map_edges_to_color = {}
+    var = 0
+    for edge in edges:
+        for i in range(3):
+            if int(big_s[count+i])>0:
+                var = int(big_s[count+i])%3
+        count +=3
+        map_edges_to_color.update({edge:var})
+    return map_edges_to_color
+        
+
 print(create_cnf())
+
+solved = input("Enter solve (Vars only) or 'UNSAT':")
+
+if solved != "UNSAT":
+    print(print_solution(solved))
+else:
+    print("Unsatisfiable... but you knew that.")
