@@ -34,6 +34,7 @@ print(edges)
 
 clause_count =  0
 def k_long_clauses(k):
+    k -= 1
     global clause_count
     clauses = ""
     for line in k_loop_pos(len(edges) - k + 1, 1, len(edges)):
