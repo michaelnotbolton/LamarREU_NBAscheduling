@@ -2,7 +2,7 @@ import scipy
 from scipy.special import comb
 #read in graph as string
 
-g = {0: [1, 2, 3, 4, 5, 6], 1: [0, 2, 3, 4, 5, 6], 2: [0, 1], 3: [0, 1], 4: [0, 1], 5: [0, 1], 6: [0, 1]}
+#g = {0: [1, 2, 3, 4, 5, 6], 1: [0, 2, 3, 4, 5, 6], 2: [0, 1], 3: [0, 1], 4: [0, 1], 5: [0, 1], 6: [0, 1]}
 # g = {0: [1, 2, 3, 4], 1: [0, 2, 3, 4, 5, 6], 2: [0, 1], 3: [0, 1], 4: [0, 1]}
 # g = {0: [1, 2, 3], 1: [0, 2, 3], 2: [0, 1], 3: [0, 1]}
 #max k is 5
@@ -18,7 +18,7 @@ g = {0: [1, 2, 3, 4, 5, 6], 1: [0, 2, 3, 4, 5, 6], 2: [0, 1], 3: [0, 1], 4: [0, 
 
 #k = input("k many edges:")
 
-k = 5
+k = 9
 
 
 v_to_e_map = {}
@@ -59,6 +59,7 @@ def k_loop_pos(k, position, max):
                 righter.append(str(n) + " " + m)
             right.extend(righter)
     return right
+
 def k_loop_neg(k, position, max):
     right = []
     #base case
@@ -108,4 +109,4 @@ def pline():
 
 
 
-print(create_cnf())
+    print(create_cnf())
