@@ -41,17 +41,16 @@ class NBA:
         for line in name_file:
             teaminfo = line.split(",")
             teaminfo[4] = teaminfo[4][0:len(teaminfo[4])-1]
-            team = Team(teaminfo[4],teaminfo[3],teaminfo[2],teaminfo[1],teaminfo[0])
+            team = Team(teaminfo[4],teaminfo[3],teaminfo[0],teaminfo[1],teaminfo[2])
             self.lst_teams.append(team)
             if team.get_conference() == "West":
                 self.lst_w_teams.append(team)
-                self.
             else:
                 self.lst_e_teams.append(team)
             if team.get_division() in self.dict_divisions.keys():
                 self.dict_divisions[team.get_division()].append(team)
             else:
-                self.dict_divisions.update({team.get_division():team})
+                self.dict_divisions.update({team.get_division():[team]})
 
     def west_teams(self):
         return self.lst_w_teams
@@ -68,23 +67,13 @@ class NBA:
     def west_divisions(self):
         lst_divs = []
         for team in self.lst_teams:
-            if team.get_conference()="West":
+            if team.get_conference()=="West":
                 lst_divs.append(team)
         return lst_divs
     
     def east_divisions(self):
         lst_divs = []
         for team in self.lst_teams:
-            if team.get_conference()="East":
+            if team.get_conference()=="East":
                 lst_divs.append(team)
         return lst_divs
-
-
-
-league = NBA()
-
-print(league.west())
-
-for team in league.west():
-    #print("done")
-    print(team.get_conference())

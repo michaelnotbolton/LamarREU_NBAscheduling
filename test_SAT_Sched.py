@@ -1,3 +1,9 @@
+from nba import NBA
+
+nba = NBA()
+for team in nba.lst_teams:
+    print(team)
+
 #Problems to address
 str_instance = input("Input instance string: ")
 
