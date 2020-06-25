@@ -1,13 +1,15 @@
+from pycosolve import Pycosat_Solver
+
 #read in string
 #graphstring = input("Input:")
-#graphstring = "{0: [1, 2], 1: [0, 2], 2: [0, 1]}" #Y
+graphstring = "{0: [1, 2], 1: [0, 2], 2: [0, 1]}" #Y
 #graphstring = "{0: [1, 2, 3, 4, 5, 6, 7], 1: [0, 2, 3, 4, 5, 6, 7], 2: [0, 1, 3, 4, 5, 6, 7], 3: [0, 1, 2, 4, 5, 6, 7], 4: [0, 1, 2, 3, 5, 6, 7], 5: [0, 1, 2, 3, 4, 6, 7], 6: [0, 1, 2, 3, 4, 5, 7], 7: [0, 1, 2, 3, 4, 5, 6]}" #N
 #graphstring = "{0: [1, 2, 3, 4, 5, 6], 1: [0, 2, 3, 4, 5, 6], 2: [0, 1, 3, 4, 5, 6], 3: [0, 1, 2, 4, 5, 6], 4: [0, 1, 2, 3, 5, 6], 5: [0, 1, 2, 3, 4, 6], 6: [0, 1, 2, 3, 4, 5]}" #Y
-graphstring = "{0: [1, 2, 3, 4, 5, 6], 1: [0, 2, 3, 4, 5, 7], 2: [0, 1, 3, 4, 6, 7], 3: [0, 1, 2, 5, 6, 7], 4: [0, 1, 2, 5, 6, 7], 5: [0, 1, 3, 4, 6, 7], 6: [0, 2, 3, 4, 5, 7], 7: [1, 2, 3, 4, 5, 6]}"
+#graphstring = "{0: [1, 2, 3, 4, 5, 6], 1: [0, 2, 3, 4, 5, 7], 2: [0, 1, 3, 4, 6, 7], 3: [0, 1, 2, 5, 6, 7], 4: [0, 1, 2, 5, 6, 7], 5: [0, 1, 3, 4, 6, 7], 6: [0, 2, 3, 4, 5, 7], 7: [1, 2, 3, 4, 5, 6]}"
 
 graph = eval(graphstring)
 
-#print(graph)
+
 keys = graph.keys()
 
 edges = []
@@ -15,12 +17,13 @@ for key in keys:
     for child in graph[key]:
         if not(((key,child) in edges) or ((child,key) in edges)):
             edges.append((key,child))
-edge_map = {edge:[] for edge in edges}
 print(edges)
+
+edge_map = {edge:[] for edge in edges}
 
 def number_of_vars():
     #number of edges
-    n = len(edges)
+    n = len(edges)*3
     return n
 
 clause_count = len(edges)*4
@@ -90,9 +93,9 @@ def vertex_clauses():
                         clause_count += 3
     return vertex_clause
 
-def print_solution(s):
+def print_solution(big_s):
     global edges
-    big_s = s.split(" ") #split into variables
+    #big_s = s.split(" ") #split into variables
     if "SAT" in big_s: big_s.remove("SAT")
     count = 0
     map_edges_to_color = {}
@@ -105,12 +108,17 @@ def print_solution(s):
         map_edges_to_color.update({edge:var})
     return map_edges_to_color
         
+cnf = create_cnf()
+print(cnf)
 
-print(create_cnf())
+sat = Pycosat_Solver(cnf)
+solved = sat.solve_iter()
 
-solved = input("Enter solve (Vars only) or 'UNSAT':")
+
+#solved = input("Enter solve (Vars only) or 'UNSAT':")
 
 if solved != "UNSAT":
-    print(print_solution(solved))
+    for sol in solved:
+        print(print_solution(sol))
 else:
     print("Unsatisfiable... but you knew that.")

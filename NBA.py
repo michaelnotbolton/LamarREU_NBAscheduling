@@ -55,7 +55,7 @@ class NBA:
     def west_teams(self):
         return self.lst_w_teams
 
-    def east_list(self):
+    def east_teams(self):
         return self.lst_e_teams
     
     def division_list(self,div):

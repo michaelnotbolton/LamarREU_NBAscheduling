@@ -1,11 +1,13 @@
 #import io 
+from pycosolve import Pycosat_Solver
+#import pycosat as sat
 
 #read in the string
-xystring = input("Input the stringification:")
+#xystring = input("Input the stringification:")
 #encoded as a list, first index is height, 
 # second is width, the rest are blocked squares
 #xystring = "3,5,(1,1),(1,5),(2,4)"
-#xystring = "2,2,(1,1)"
+xystring = "2,2,(1,1)"
 
 #remove the parenthesis, useless things
 xystring = xystring.replace("(","")
@@ -144,7 +146,8 @@ def col_clauses():
     return str_col
 
 def print_solution(s):
-    big_s = s.split(" ") #split into variables
+    #big_s = s.split(" ") #split into variables
+    big_s=s
     position = 0 #hold position
     grid_string = "" 
     for i in range(1,height+1):
@@ -163,13 +166,49 @@ def print_solution(s):
                 position+=1 #increment position
         grid_string += "\r\n" #return the string
     return grid_string
+    
+def resolveCNFtoList(cnf):
+    cnf = cnf.split("\n")
+    cnf_array = [line.split(" ") for line in cnf]
+    cnf_array = [line for line in cnf_array if clean(line)]
+    for i, line in enumerate(cnf_array):
+        cnf_array[i] = [c for c in line if clean2(c)]
+        cnf_array[i] = [int(c) for c in cnf_array[i]]
+    return(cnf_array)
 
-print(create_cnf())
+def clean(arr):
+    if arr[0]=="c" or arr[0] =="p":
+        return False
+    if arr == ['']:
+        return False
+    return True
+
+def clean2(c):
+    if (c != "0") and (c != ''):
+        return True
+    return False
+
+cnf = create_cnf()
+#print(cnf)
 print(grid_as_string())
 
-solved = input("Enter solve (Vars only) or 'UNSAT':")
 
-if solved != "UNSAT":
-    print(print_solution(solved))
+#cnf = resolveCNFtoList(cnf)
+#print(cnf)
+#solved = input("Enter solve (Vars only) or 'UNSAT':")
+
+sat = Pycosat_Solver(cnf)
+solved = sat.solve_iter()
+
+#solved = sat.solve(cnf)
+#solved = sat.itersolve(cnf)
+
+
+if solved != "UNSAT" and solved != "UNKNOWN":
+    #print(solved)
+    #print(print_solution(solved))
+    for i,sol in enumerate(solved):
+        print(i)
+        print(print_solution(sol))
 else:
     print("Unsatisfiable... but you knew that.")
