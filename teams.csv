@@ -1,30 +1,30 @@
-Celtics,Boston,Boston,Atlantic,East
-Nets,Brooklyn,Brooklyn,Atlantic,East
-Knicks,New York,New York,Atlantic,East
-76ers,Philadelphia,Philadelphia,Atlantic,East
-Raptors,Toronto,Toronto,Atlantic,East
-Bulls,Chicago,Chicago,Central,East
-Cavaliers,Cleveland,Cleveland,Central,East
-Pistons,Detroit,Detroit,Central,East
-Pacers,Indiana,Indianapolis,Central,East
-Bucks,Milkwaukee,Milwaukee,Central,East
-Nuggets,Denver,Denver,Northwest,West
-Timberwolves,Minnesota,Minneapolis,Northwest,West
-Thunder,Oklahoma City,Oklahoma City,Northwest,West
-Trail Blazers,Portland,Portland,Northwest,West
-Jazz,Utah,Salt Lake City,Northwest,West
-Warriors,Golden State,San Francisco,Pacific,West
-Clippers,LA,Los Angeles,Pacific,West
-Lakers,Los Angeles,Los Angeles,Pacific,West
-Suns,Pheonix,Phoenix,Pacific,West
-Kings,Sacramento,Sacramento,Pacific,West
-Hawks,Atlanta,Atlanta,Southeast,East
-Hornets,Charlotte,Charlotte,Southeast,East
-Heat,Miami,Miami,Southeast,East
-Magic,Orlando,Orlando,Southeast,East
-Wizards,Washington,Washington D.C.,Southeast,East
-Mavericks,Dallas,Dallas,Southwest,West
-Rockets,Houston,Houston,Southwest,West
-Grizzlies,Memphis,Memphis,Southwest,West
-Pelicans,New Orleans,New Orleans,Southwest,West
-Spurs,San Antonio,San Antonio,Southwest,West
+Celtics,Boston,Boston,Atlantic,East,BOS,,,,,
+76ers,Philadelphia,Philadelphia,Atlantic,East,PHI,,,,,
+Bucks,Milkwaukee,Milwaukee,Central,East,MIL,,,,,
+Bulls,Chicago,Chicago,Central,East,CHI,,,,,
+Cavaliers,Cleveland,Cleveland,Central,East,CLE,,,,,
+Clippers,LA,Los_Angeles,Pacific,West,LAC,,,,,
+Grizzlies,Memphis,Memphis,Southwest,West,MEM,,,,,
+Hawks,Atlanta,Atlanta,Southeast,East,ATL,,,,,
+Heat,Miami,Miami,Southeast,East,MIA,,,,,
+Hornets,Charlotte,Charlotte,Southeast,East,CHA,,,,,
+Jazz,Utah,Salt_Lake_City,Northwest,West,UTA,,,,,
+Kings,Sacramento,Sacramento,Pacific,West,SAC,,,,,
+Knicks,New_York,New_York,Atlantic,East,NYK,,,,,
+Lakers,Los_Angeles,Los_Angeles,Pacific,West,LAL,,,,,
+Magic,Orlando,Orlando,Southeast,East,ORL,,,,,
+Mavericks,Dallas,Dallas,Southwest,West,DAL,,,,,
+Nets,Brooklyn,Brooklyn,Atlantic,East,BKN,,,,,
+Nuggets,Denver,Denver,Northwest,West,DEN,,,,,
+Pacers,Indiana,Indianapolis,Central,East,IND,,,,,
+Pelicans,New_Orleans,New_Orleans,Southwest,West,NOP,,,,,
+Pistons,Detroit,Detroit,Central,East,DET,,,,,
+Raptors,Toronto,Toronto,Atlantic,East,TOR,,,,,
+Rockets,Houston,Houston,Southwest,West,HOU,,,,,
+Spurs,San_Antonio,San_Antonio,Southwest,West,SAS,,,,,
+Suns,Pheonix,Phoenix,Pacific,West,PHX,,,,,
+Thunder,Oklahoma_City,Oklahoma_City,Northwest,West,OKC,,,,,
+Timberwolves,Minnesota,Minneapolis,Northwest,West,MIN,,,,,
+Trail_Blazers,Portland,Portland,Northwest,West,POR,,,,,
+Warriors,Golden_State,San_Francisco,Pacific,West,GSW,,,,,
+Wizards,Washington,Washington_D.C.,Southeast,East,WAS,,,,,

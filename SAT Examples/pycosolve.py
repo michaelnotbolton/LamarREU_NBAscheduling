@@ -22,7 +22,7 @@ def clean2(c):
     return False
 
 class Pycosat_Solver:
-    '''BROKEN - A wrapper for DIMACS format'''
+    '''A wrapper for DIMACS format'''
 
 
     def __init__(self, dimac):

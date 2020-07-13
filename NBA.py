@@ -2,12 +2,13 @@ import os
 class Team:
     '''A structure to hold team information'''
 
-    def __init__(self, conf, div, name, reg_name, home):
+    def __init__(self, conf, div, name, reg_name, home, code):
         self.conference = conf
         self.division = div
         self.name = name
         self.regional_name = reg_name
         self.hometown = home
+        self.code = code
 
     def get_conference(self):
         return self.conference
@@ -23,6 +24,9 @@ class Team:
 
     def get_hometown(self):
         return self.hometown
+    
+    def get_code(self):
+        return self.code
 
     def __str__(self):
         return str(self.__class__) + ": " + str(self.__dict__)
@@ -41,7 +45,7 @@ class NBA:
         for line in name_file:
             teaminfo = line.split(",")
             teaminfo[4] = teaminfo[4][0:len(teaminfo[4])-1]
-            team = Team(teaminfo[4],teaminfo[3],teaminfo[0],teaminfo[1],teaminfo[2])
+            team = Team(teaminfo[4],teaminfo[3],teaminfo[0],teaminfo[1],teaminfo[2],teaminfo[5])
             self.lst_teams.append(team)
             if team.get_conference() == "West":
                 self.lst_w_teams.append(team)
