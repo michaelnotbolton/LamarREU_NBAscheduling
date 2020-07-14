@@ -56,10 +56,7 @@ def solve():
     global clause_list
     solution = sat.solve(clause_list)
     #finds the true variable for every 3 and reduces to H,A,B
-    #solution = [hab(max(solution[(i*3):(i*3)+3])%3) for i in range(len(solution)//3)]
-
-    #Finds the true variable and replaces it with it's code
-    solution = [var_to_team_map[max(solution[(i*3):(i*3)+3])-1] for i in range(len(solution)//3)]
+    solution = [hab(max(solution[(i*3):(i*3)+3])%3) for i in range(len(solution)//3)]
 
     solution = [solution[(i*30):(i*30)+180] for i in range(30)]
     
