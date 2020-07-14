@@ -37,7 +37,7 @@ lst_divisions = ["Atlantic","Central","Northwest","Pacific","Southeast","Southwe
 class NBA:
     ''' A structure for NBA organization '''
     def __init__(self):
-        name_file = open(os.getcwd() + "\\teams.csv","r")
+        name_file = open(os.getcwd() + os.sep + "teams.csv","r")
         self.lst_teams = []
         self.lst_w_teams = []
         self.lst_e_teams = []

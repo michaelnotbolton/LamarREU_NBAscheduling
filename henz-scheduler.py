@@ -16,7 +16,8 @@ for team in codes: #for each team
         new_vars = [team+"_"+str(i)+a for a in poss_var]
         var_list += new_vars
 
-var_map = {team:index for (index,team) in enumerate(var_list)}
+team_to_var_map = {team:index for (index,team) in enumerate(var_list)}
+var_to_team_map = {index:team for (index,team) in enumerate(var_list)}
 
 clause_list = [] #he's gonna be a fat boi
 
@@ -33,10 +34,11 @@ def hab_clauses():
         vars3 = [start_i+1,start_i+2,start_i+3]
         hab_clause_list += [vars3]
         for j in range(3):
-            tempvars = [1 for i in range(3)]
-            tempvars[j] = -1
+            tempvars = [-1 for i in range(3)]
+            tempvars[j] = 1
             tempvars = list(numpy.multiply(vars3,tempvars))
-            hab_clause_list += [tempvars]
+            #print([int(n) for n in tempvars])
+            hab_clause_list += [[int(n) for n in tempvars]]
     return hab_clause_list
 
 def tl_equal(subvars,n):
@@ -49,7 +51,29 @@ def max_games_limit_clauses():
 
 
 
+def solve():
+    create_clauses()
+    global clause_list
+    solution = sat.solve(clause_list)
+    #finds the true variable for every 3 and reduces to H,A,B
+    #solution = [hab(max(solution[(i*3):(i*3)+3])%3) for i in range(len(solution)//3)]
 
-create_clauses()
-solution = sat.solve(clause_list)
-print(solution)
+    #Finds the true variable and replaces it with it's code
+    solution = [var_to_team_map[max(solution[(i*3):(i*3)+3])-1] for i in range(len(solution)//3)]
+
+    solution = [solution[(i*30):(i*30)+180] for i in range(30)]
+    
+    for (i,team_list) in enumerate(solution):
+        print(nba.lst_teams[i].code)
+        print(team_list)
+
+def hab(i):
+    if i == 1:
+        return "H"
+    if i == 2:
+        return "A"
+    if i == 0:
+        return "B"
+
+
+solve()
