@@ -44,18 +44,21 @@ var_dict = {var:index for (index,var) in enumerate(var_list)}
 clause_list = []
 
 def read_static_clauses():
+    global clause_list
+    with open("./clauses.pkl", "rb") as pickle_load:
+        clause_list = pickle.load(pickle_load)
     return ""
 
 def create_clauses():
     global clause_list
 
-    read_static_clauses() #add previously saved clauses
+    #read_static_clauses() #add previously saved clauses
 
-    #clause_list += interconference_clauses() #add interconference clauses
-    #print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
+    clause_list += interconference_clauses() #add interconference clauses
+    print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
 
-    #clause_list += one_game_per_team_per_day_clauses()
-    #print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
+    clause_list += one_game_per_team_per_day_clauses()
+    print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
     
 
 # needs work
@@ -119,8 +122,8 @@ def true_literal_leq_clause(n_vars,k):
     return clauses
 
 def save_static_clauses():
-    
-    print(clause_list,file=open("./clauses.txt",'a'))
+    with open("clauses", "wb") as pickle_file:
+        pickle.dump(clause_list,pickle_file,protocol=pickle.HIGHEST_PROTOCOL)
 
 def test():
 
