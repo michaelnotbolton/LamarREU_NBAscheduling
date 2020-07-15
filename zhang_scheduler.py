@@ -119,11 +119,12 @@ def true_literal_leq_clause(n_vars,k):
     return clauses
 
 def save_static_clauses():
+    
     print(clause_list,file=open("./clauses.txt",'a'))
 
 def test():
 
-
+    
     #print(len(interconference_clauses()))
     #print(len(one_game_per_team_per_day_clauses()))
     #print(true_equals_literal_clause(["1","2","3","4","5"],3))
