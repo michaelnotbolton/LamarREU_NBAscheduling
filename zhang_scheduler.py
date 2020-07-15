@@ -5,14 +5,27 @@ from itertools import combinations, chain
 import numpy
 import copy
 import datetime
+import pickle
 
 start_time = datetime.datetime.now()
+def elapsed():
+    time = datetime.datetime.now() - start_time
+    time = str(time.total_seconds()//1) + " sec"
+    return time
 
 nba = NBA()
 
+# lists of three letter team codes for every team in the league, conferences, and divisions
 codes = [team.get_code() for team in nba.teams()]
 west_codes = [team.get_code() for team in nba.west_teams()]
+west_northwest_codes = [team.get_code() for team in nba.west_northwest_teams()]
+west_pacific_codes = [team.get_code() for team in nba.west_pacific_teams()]
+west_southwest_codes = [team.get_code() for team in nba.west_southwest_teams()]
 east_codes = [team.get_code() for team in nba.east_teams()]
+east_atlantic_codes = [team.get_code() for team in nba.east_atlantic_teams()]
+east_central_codes = [team.get_code() for team in nba.east_central_teams()]
+east_southeast_codes = [team.get_code() for team in nba.east_southeast_teams()]
+
 
 var_list = []
 
@@ -28,12 +41,24 @@ for home_team in codes: # for each home team
 # instead of using linear time var_list.index() we can use a constat time dictionary lookup
 var_dict = {var:index for (index,var) in enumerate(var_list)} 
 
-
 clause_list = []
+
+def read_static_clauses():
+    return ""
 
 def create_clauses():
     global clause_list
 
+    read_static_clauses() #add previously saved clauses
+
+    #clause_list += interconference_clauses() #add interconference clauses
+    #print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
+
+    #clause_list += one_game_per_team_per_day_clauses()
+    #print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
+    
+
+# needs work
 def day_exclusion_clauses(team_codes, daynum): # ensures that the teams in the teams list don't play on the day, daynum
     clauses = []
     for home_team in team_codes: # for each home team
@@ -58,39 +83,43 @@ def interconference_clauses(): # each team plays two games against every team in
 
 def one_game_per_team_per_day_clauses():
     clauses = []
-    for team in codes:
-        codes_sans_one = copy.copy(codes)
-        codes_sans_one.remove(team)
-        for day in range(180):
-            team_day_var_set = []
-            for other_team in codes_sans_one:
-                team_day_var_set.append(var_dict[team+"_"+other_team+"_"+str(day)])
-                team_day_var_set.append(var_dict[other_team+"_"+team+"_"+str(day)])
-            clauses.extend(true_literal_leq_clause(team_day_var_set,1))
+    for team in codes: # for each team
+        for day in range(180): # for each day of the season for said team
+            team_day_var_set = [] # the set of all games a team can play on a specific day
+            for other_team in codes: # populating the set of all games a team can play on a specific day opponent wise
+                if team != other_team: # teams can't play themselves
+                    team_day_var_set.append(var_dict[team+"_"+other_team+"_"+str(day)]) # home game
+                    team_day_var_set.append(var_dict[other_team+"_"+team+"_"+str(day)]) # away game
+            clauses.extend(true_literal_leq_clause(team_day_var_set,1)) # limiting the set to at most one can be true
     return clauses
 
+# ensures exactly k of the n variables in n_vars is true
 def true_literal_equals_clause(n_vars,k):
     clauses = []
-    for comb in itertools.combinations(n_vars,len(n_vars)-k+1):
+    for comb in itertools.combinations(n_vars,len(n_vars)-k+1): # for each combination of n-k+1 variables, to ensure at least k variables are true
         clause = ""
-        for element in comb:
+        for element in comb: # parses through the elements of the combination to build the associated clause
             clause += str(element) + " "
         clauses.append(clause.strip())
-    for comb in itertools.combinations(n_vars,k+1):
+    for comb in itertools.combinations(n_vars,k+1): # for each combination of n-(n-k)+1 = k+1 variables, to ensure at least n-k variables are false
         clause = ""
-        for element in comb:
-            clause += "-" + str(element) + " "
+        for element in comb: # parses through the elements of the combination to build the associated clause
+            clause += "-" + str(element) + " " # the negative is because we want to ensure the variables are false
         clauses.append(clause.strip())
     return clauses
 
+# ensures at most k of the n variables in n_vars is true
 def true_literal_leq_clause(n_vars,k):
     clauses = []
-    for comb in itertools.combinations(n_vars,k+1):
+    for comb in itertools.combinations(n_vars,k+1): # for each combination of n-(n-k)+1 = k+1 variables, to ensure at least n-k variables are false
         clause = ""
-        for element in comb:
-            clause += "-" + str(element) + " "
+        for element in comb: # parses through the elements of the combination to build the associated clause
+            clause += "-" + str(element) + " " # the negative is because we want to ensure the variables are false
         clauses.append(clause.strip())
     return clauses
+
+def save_static_clauses():
+    print(clause_list,file=open("./clauses.txt",'a'))
 
 def test():
 
@@ -100,10 +129,8 @@ def test():
     #print(true_equals_literal_clause(["1","2","3","4","5"],3))
     #print(day_exclusion_clauses(123))
 
+    create_clauses()
+    save_static_clauses()
 
-
-    total_time = datetime.datetime.now()-start_time
-    print(f"Finished in {total_time}")
-
-
+    print(f"Finished in {elapsed()}")
 test()

@@ -40,8 +40,13 @@ class NBA:
         name_file = open(os.getcwd() + os.sep + "teams.csv","r")
         self.lst_teams = []
         self.lst_w_teams = []
+        self.lst_w_nw_teams = []
+        self.lst_w_p_teams = []
+        self.lst_w_sw_teams = []
         self.lst_e_teams = []
-        self.dict_divisions = {}
+        self.lst_e_a_teams = []
+        self.lst_e_c_teams = []
+        self.lst_e_se_teams = []
         for line in name_file:
             teaminfo = line.split(",")
             teaminfo[4] = teaminfo[4][0:len(teaminfo[4])]
@@ -49,35 +54,46 @@ class NBA:
             self.lst_teams.append(team)
             if team.get_conference() == "West":
                 self.lst_w_teams.append(team)
+                if team.get_division() == "Southwest":
+                    self.lst_w_sw_teams.append(team)
+                elif team.get_division() == "Pacific":
+                    self.lst_w_p_teams.append(team)
+                else:
+                    self.lst_w_nw_teams.append(team)
             else:
                 self.lst_e_teams.append(team)
-            if team.get_division() in self.dict_divisions.keys():
-                self.dict_divisions[team.get_division()].append(team)
-            else:
-                self.dict_divisions.update({team.get_division():[team]})
+                if team.get_division() ==  "Southeast":
+                    self.lst_e_se_teams.append(team)
+                elif team.get_division() == "Atlantic":
+                    self.lst_e_a_teams.append(team)
+                else:
+                    self.lst_e_c_teams.append(team)
 
     def west_teams(self):
         return self.lst_w_teams
 
+    def west_northwest_teams(self):
+        return self.lst_w_nw_teams
+    
+    def west_pacific_teams(self):
+        return self.lst_w_p_teams
+
+    def west_southwest_teams(self):
+        return self.lst_w_sw_teams
+
     def east_teams(self):
         return self.lst_e_teams
 
-    def division_list(self,div):
-        return self.dict_divisions[div]
+    def east_atlantic_teams(self):
+        return self.lst_e_a_teams
+
+    def east_central_teams(self):
+        return self.lst_e_c_teams
+
+    def east_southeast_teams(self):
+        return self.lst_e_se_teams
 
     def teams(self):
         return self.lst_teams
 
-    def west_divisions(self):
-        lst_divs = []
-        for team in self.lst_teams:
-            if team.get_conference()=="West":
-                lst_divs.append(team)
-        return lst_divs
 
-    def east_divisions(self):
-        lst_divs = []
-        for team in self.lst_teams:
-            if team.get_conference()=="East":
-                lst_divs.append(team)
-        return lst_divs
