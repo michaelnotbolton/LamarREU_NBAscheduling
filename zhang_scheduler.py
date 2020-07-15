@@ -4,6 +4,9 @@ import itertools
 from itertools import combinations, chain
 import numpy
 import copy
+import datetime
+
+start_time = datetime.datetime.now()
 
 nba = NBA()
 
@@ -15,12 +18,15 @@ var_list = []
 
 #this generates our list of variables
 for home_team in codes: # for each home team
-    codes_sans_home = copy.copy(codes) # copy the set of teams
-    codes_sans_home.remove(home_team) # and remove the home team, teams don't play themselves
-    for away_team in codes_sans_home: # for each away team/
-        for day in range(180): # for each day
-            var_list.append(home_team+"_"+away_team+"_"+str(day))
-var_dict = {var:index for index,var in var_list} # instead of using linear time var_list.index() we can use a constat time dictionary lookup
+    for away_team in codes: # for each away team/
+        if away_team != home_team: #if not the same team
+            str_var = home_team + "_" + away_team + "_" #create their prefix
+            for day in range(180): # for each day
+                var_list += [str_var + str(day)] #add their complete name to the list
+
+
+# instead of using linear time var_list.index() we can use a constat time dictionary lookup
+var_dict = {var:index for (index,var) in enumerate(var_list)} 
 
 
 clause_list = []
@@ -86,8 +92,18 @@ def true_literal_leq_clause(n_vars,k):
         clauses.append(clause.strip())
     return clauses
 
+def test():
 
-print(len(interconference_clauses()))
-# print(len(one_game_per_team_per_day_clauses()))
-# print(true_equals_literal_clause(["1","2","3","4","5"],3))
-# print(day_exclusion_clauses(123))
+
+    #print(len(interconference_clauses()))
+    #print(len(one_game_per_team_per_day_clauses()))
+    #print(true_equals_literal_clause(["1","2","3","4","5"],3))
+    #print(day_exclusion_clauses(123))
+
+
+
+    total_time = datetime.datetime.now()-start_time
+    print(f"Finished in {total_time}")
+
+
+test()
