@@ -13,18 +13,18 @@ class Team:
     def get_conference(self):
         return self.conference
 
-    def get_name(self):
-        return self.name
-    
     def get_division(self):
         return self.division
+
+    def get_name(self):
+        return self.name
 
     def get_regional_name(self):
         return self.regional_name
 
     def get_hometown(self):
         return self.hometown
-    
+
     def get_code(self):
         return self.code
 
@@ -44,7 +44,7 @@ class NBA:
         self.dict_divisions = {}
         for line in name_file:
             teaminfo = line.split(",")
-            teaminfo[4] = teaminfo[4][0:len(teaminfo[4])-1]
+            teaminfo[4] = teaminfo[4][0:len(teaminfo[4])]
             team = Team(teaminfo[4],teaminfo[3],teaminfo[0],teaminfo[1],teaminfo[2],teaminfo[5])
             self.lst_teams.append(team)
             if team.get_conference() == "West":
@@ -61,20 +61,20 @@ class NBA:
 
     def east_teams(self):
         return self.lst_e_teams
-    
+
     def division_list(self,div):
         return self.dict_divisions[div]
-    
+
     def teams(self):
         return self.lst_teams
-    
+
     def west_divisions(self):
         lst_divs = []
         for team in self.lst_teams:
             if team.get_conference()=="West":
                 lst_divs.append(team)
         return lst_divs
-    
+
     def east_divisions(self):
         lst_divs = []
         for team in self.lst_teams:
