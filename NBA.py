@@ -95,5 +95,3 @@ class NBA:
 
     def teams(self):
         return self.lst_teams
-
-
