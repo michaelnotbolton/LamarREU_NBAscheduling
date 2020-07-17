@@ -48,7 +48,8 @@ for home_team in codes: # for each home team
 
 
 # instead of using linear time var_list.index() we can use a constat time dictionary lookup
-var_dict = {var:index for (index,var) in enumerate(var_list)} 
+var_dict = {var:index+1 for (index,var) in enumerate(var_list)} 
+index_to_var_dict = {index+1:var for (index,var) in enumerate(var_list)}
 
 clause_list = []
 
@@ -66,8 +67,8 @@ def read_static_clauses():
         #clause_list += day_exclusion_clauses() #add day clauses
         #print(f"Day exlusion clauses added at time {elapsed()} with {len(clause_list)} clauses")
 
-        #clause_list += interconference_clauses() #add interconference clauses
-        #print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
+        clause_list += interconference_clauses() #add interconference clauses
+        print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
 
         clause_list += one_game_per_team_per_day_clauses()
         print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
@@ -123,7 +124,7 @@ def one_game_per_team_per_day_clauses():
                     team_day_var_set.append(var_dict[team+"_"+other_team+"_"+str(day)]) # home game
                     team_day_var_set.append(var_dict[other_team+"_"+team+"_"+str(day)]) # away game
             clauses.extend(true_literal_leq_clause(team_day_var_set,1)) # limiting the set to at most one can be true
-    return [clauses]
+    return clauses
 
 # ensures exactly k of the n variables in n_vars is true
 def true_literal_equals_clause(n_vars,k):
@@ -154,12 +155,14 @@ def true_literal_leq_clause(n_vars,k):
 def solve():
     global clause_list
     solution = sat.solve(clause_list)
+    solution = [index_to_var_dict[n] for n in solution if n>0]
     print(solution)
+    print(f"Solved at time {elapsed()} with {len(clause_list)} clauses")
     
 
 def test():
     create_clauses()
-    print(clause_list)
+
     solve()
 
     print(f"Finished in {elapsed()}")
