@@ -5,7 +5,21 @@ from itertools import combinations, chain
 import numpy
 import copy
 import datetime
-import pickle
+import os
+
+version = [1]
+up_to_date = False
+previous_exists = os.path.exists("./clauses.txt")
+if previous_exists:
+    with open("./clauses.txt") as f:
+        versions_line = eval(f.readline())
+        print(versions_line)
+        up_to_date = (versions_line == version)
+    
+
+print(f"Previous exists: {previous_exists}")
+print(f"Up to date?: {up_to_date}")
+print(f"(not previous_exists) or (not up_to_date): {(not previous_exists) or (not up_to_date)}")
 
 start_time = datetime.datetime.now()
 def elapsed():
@@ -45,20 +59,35 @@ clause_list = []
 
 def read_static_clauses():
     global clause_list
-    with open("./clauses.pkl", "rb") as pickle_load:
-        clause_list = pickle.load(pickle_load)
-    return ""
+    global version
+    global previous_exists
+    global up_to_date
+
+    if (not previous_exists) or (not up_to_date):
+        if previous_exists:
+            os.remove("./clauses.txt")
+
+        clause_list += interconference_clauses() #add interconference clauses
+        print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
+
+        clause_list += one_game_per_team_per_day_clauses()
+        print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
+
+        with open("./clauses.txt","a") as f:
+            f.write(f"{version}\n")
+            f.write(f"{clause_list}")
+            print(f"Added static clauses to text file at time {elapsed()}")
+            
+    else:
+        with open("./clauses.txt") as f:
+            f.readline()
+            clause_list = eval(f.readline())
+        print(f"Read static clauses ad time {elapsed()} with {len(clause_list)} clauses")
 
 def create_clauses():
     global clause_list
 
-    #read_static_clauses() #add previously saved clauses
-
-    clause_list += interconference_clauses() #add interconference clauses
-    print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
-
-    clause_list += one_game_per_team_per_day_clauses()
-    print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
+    read_static_clauses() #add previously saved clauses
     
 
 # needs work
@@ -121,20 +150,10 @@ def true_literal_leq_clause(n_vars,k):
         clauses.append(clause.strip())
     return clauses
 
-def save_static_clauses():
-    with open("clauses", "wb") as pickle_file:
-        pickle.dump(clause_list,pickle_file,protocol=pickle.HIGHEST_PROTOCOL)
-
 def test():
-
-    
-    #print(len(interconference_clauses()))
-    #print(len(one_game_per_team_per_day_clauses()))
-    #print(true_equals_literal_clause(["1","2","3","4","5"],3))
-    #print(day_exclusion_clauses(123))
-
     create_clauses()
-    save_static_clauses()
+
 
     print(f"Finished in {elapsed()}")
+
 test()
