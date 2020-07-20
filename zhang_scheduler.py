@@ -6,14 +6,24 @@ import numpy
 import copy
 import datetime
 import os
+try:
+    import _pickle as pickle
+except:
+    import pickle
 
 version = [1]
 #KEEP THIS UPDATED - increment every time addtional clause methods are added or clause methods are changed
 
-previous_exists = os.path.exists("./clauses.txt")
+
+#start day assumed as the 3rd Tuesday of October
+start_date = datetime.datetime(2020,10,20)
+
+
+
+previous_exists = os.path.exists("./clauses.pkl")
 if previous_exists:
-    with open("./clauses.txt") as f:
-        versions_line = [-1] #eval(f.readline())
+    with open("./version.txt") as f:
+        versions_line = eval(f.readline())
         up_to_date = (versions_line == version)
 
 start_time = datetime.datetime.now()
@@ -60,9 +70,9 @@ def read_static_clauses():
     global up_to_date
 
     if (not previous_exists) or (not up_to_date):
-        print("Updating local clauses.txt")
+        print("Updating local clauses.pkl")
         if previous_exists:
-            os.remove("./clauses.txt")
+            os.remove("./clauses.pkl")
 
         #clause_list += day_exclusion_clauses() #add day clauses
         #print(f"Day exlusion clauses added at time {elapsed()} with {len(clause_list)} clauses")
@@ -73,16 +83,30 @@ def read_static_clauses():
         clause_list += one_game_per_team_per_day_clauses()
         print(f"1 game/team/day clauses added at time {elapsed()} with {len(clause_list)} clauses")
 
-        with open("./clauses.txt","a") as f:
-            f.write(f"{version}\n")
-            #f.write(f"{clause_list}")
-            print(f"Added static clauses to text file at time {elapsed()}")
+        print(version,file=open("./version.txt","w+"))
+
+        pickle_on = open("clauses.pkl","wb")
+        pickle.dump(clause_list,pickle_on)
+        pickle_on.close()
+
+        '''
+        with open("./clauses.pkl","a") as f:
+
+            #f.write(f"{clause_list}") '''
+        
+        print(f"Added static clauses to text file at time {elapsed()}")
             
     else:
-        print("Reading from clauses.txt")
-        with open("./clauses.txt") as f:
+        print("Reading from clauses.pkl")
+        
+        pickle_off = open("clauses.pkl","rb")
+        clause_list = pickle.load(pickle_off)
+        pickle_off.close()
+        '''
+        with open("./clauses.pkl") as f:
             f.readline()
             clause_list = eval(f.readline())
+            '''
         print(f"Read static clauses ad time {elapsed()} with {len(clause_list)} clauses")
 
 def create_clauses():
@@ -163,11 +187,10 @@ def schedule(solution):
 
     strings = ["" for i in range(max_length+1)]
     for key in schedule.keys():
-        col_head = str(key)
-        if len(col_head)<3:
-            for i in range(3-len(str(key))):
-                col_head = col_head + " "
-        strings[0] += col_head + "       "
+        col_head = start_date + datetime.timedelta(days=key)
+        col_head = col_head.strftime("%B %d |")
+
+        strings[0] += col_head
         for i in range(max_length):
             if i<len(schedule[key]):
                 strings[i+1] += schedule[key][i][1] + " @ " + schedule[key][i][0] + "|"
@@ -177,16 +200,6 @@ def schedule(solution):
     str_schedule = ""
     for string in strings:
         str_schedule  += string + "\n"
-    '''
-    for i in range(len(strings)):
-        for key in schedule.keys():
-            print(i)
-            if len(schedule[key]) < i-1:
-                strings[i] += schedule[key][i][1] + "@" + schedule[key][i][0] + " "
-            else:
-                strings[i] += "        "
-        str_schedule += strings[i] + "\n"
-        '''
 
     return str_schedule
 
