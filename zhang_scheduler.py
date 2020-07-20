@@ -19,7 +19,7 @@ if previous_exists:
 start_time = datetime.datetime.now()
 def elapsed():
     time = datetime.datetime.now() - start_time
-    time = str(time.total_seconds()//1) + " sec"
+    time = str(int(time.total_seconds()//1)) + " sec"
     return time
 
 nba = NBA()
@@ -151,12 +151,53 @@ def true_literal_leq_clause(n_vars,k):
         clauses.append(clause)
     return clauses
 
+def schedule(solution):
+    schedule = {i:[] for i in range(1,181)}
+    for game in solution:
+        game = game.split("_")
+        schedule[int(game[2])].append(game)
+
+    schedule = {day:schedule[day] for day in schedule.keys() if schedule[day] !=[]}
+
+    max_length = max([len(schedule[key]) for key in schedule.keys()])
+
+    strings = ["" for i in range(max_length+1)]
+    for key in schedule.keys():
+        col_head = str(key)
+        if len(col_head)<3:
+            for i in range(3-len(str(key))):
+                col_head = col_head + " "
+        strings[0] += col_head + "       "
+        for i in range(max_length):
+            if i<len(schedule[key]):
+                strings[i+1] += schedule[key][i][1] + " @ " + schedule[key][i][0] + "|"
+            else:
+                strings[i+1] += "          "
+    
+    str_schedule = ""
+    for string in strings:
+        str_schedule  += string + "\n"
+    '''
+    for i in range(len(strings)):
+        for key in schedule.keys():
+            print(i)
+            if len(schedule[key]) < i-1:
+                strings[i] += schedule[key][i][1] + "@" + schedule[key][i][0] + " "
+            else:
+                strings[i] += "        "
+        str_schedule += strings[i] + "\n"
+        '''
+
+    return str_schedule
 
 def solve():
     global clause_list
     solution = sat.solve(clause_list)
     solution = [index_to_var_dict[n] for n in solution if n>0]
-    print(solution)
+
+    scheduled = schedule(solution)
+
+    print(scheduled,file=open("./solution.txt","w+"))
     print(f"Solved at time {elapsed()} with {len(clause_list)} clauses")
     
 
