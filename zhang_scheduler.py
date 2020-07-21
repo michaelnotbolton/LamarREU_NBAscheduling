@@ -45,6 +45,9 @@ east_atlantic_codes = [team.get_code() for team in nba.east_atlantic_teams()]
 east_central_codes = [team.get_code() for team in nba.east_central_teams()]
 east_southeast_codes = [team.get_code() for team in nba.east_southeast_teams()]
 
+#list of intraconference, interdivision games that won't be played this season, home game listed first
+#this is for the 2018-2019 season
+no_play_list = ["ATL_BKN","ATL_CLE","BKN_IND","BKN_ORL","BOS_CHI","BOS_WAS","CHA_IND","CHA_TOR","CHI_CHA","CHI_NYK","CLE_ORL","CLE_PHI","DAL_DEN","DAL_LAL","DEN_LAL","DEN_MEM","DET_ATL","DET_BKN","GSW_SAS","GSW_UTA","HOU_LAC","HOU_MIN","IND_MIA","IND_TOR","LAC_MIN","LAC_NOP","LAL_MEM","LAL_OKC","MEM_OKC","MEM_PHX","MIA_CHI","MIA_NYK","MIL_BOS","MIL_WAS","MIN_DAL","MIN_PHX","NOP_GSW","NOP_POR","NYK_CHA","NYK_CLE","OKC_GSW","OKC_SAS","ORL_BOS","ORL_MIL","PHI_MIA","PHI_MIL","PHX_HOU","PHX_POR","POR_HOU","POR_SAC","SAC_DAL","SAC_DEN","SAS_SAC","SAS_UTA","TOR_ATL","TOR_DET","UTA_LAC","UTA_NOP","WAS_DET","WAS_PHI",""]
 
 var_list = []
 
@@ -58,7 +61,7 @@ for home_team in codes: # for each home team
 
 
 # instead of using linear time var_list.index() we can use a constat time dictionary lookup
-var_dict = {var:index+1 for (index,var) in enumerate(var_list)} 
+var_dict = {var:index+1 for (index,var) in enumerate(var_list)}
 index_to_var_dict = {index+1:var for (index,var) in enumerate(var_list)}
 
 clause_list = []
@@ -77,6 +80,9 @@ def read_static_clauses():
         #clause_list += day_exclusion_clauses() #add day clauses
         #print(f"Day exlusion clauses added at time {elapsed()} with {len(clause_list)} clauses")
 
+        # clause_list += intraconference_clauses() #add intraconference clauses
+        # print(f"IntraCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
+
         clause_list += interconference_clauses() #add interconference clauses
         print(f"InterCon Clauses added at time {elapsed()} with {len(clause_list)} clauses")
 
@@ -93,12 +99,12 @@ def read_static_clauses():
         with open("./clauses.pkl","a") as f:
 
             #f.write(f"{clause_list}") '''
-        
+
         print(f"Added static clauses to text file at time {elapsed()}")
-            
+
     else:
         print("Reading from clauses.pkl")
-        
+
         pickle_off = open("clauses.pkl","rb")
         clause_list = pickle.load(pickle_off)
         pickle_off.close()
@@ -113,7 +119,7 @@ def create_clauses():
     global clause_list
 
     read_static_clauses() #add previously saved clauses
-    
+
 
 # needs work
 def day_exclusion_clauses(team_codes, daynum): # ensures that the teams in the teams list don't play on the day, daynum
@@ -136,6 +142,21 @@ def interconference_clauses(): # each team plays two games against every team in
                 away_pairing_var_set.append(var_dict[east_team+"_"+west_team+"_"+str(day)])
             clauses.extend(true_literal_equals_clause(home_pairing_var_set,1)) # each interconference pairing plays exactly one home game for the western conference team
             clauses.extend(true_literal_equals_clause(away_pairing_var_set,1)) # each interconference pairing plays exactly one away game for the western conference team
+    return clauses
+
+def intraconference_clauses(): # each team plays 4 games against each other team in their division
+    clauses = []
+    for conference in [east_codes, west_codes]: # these clauses need to be generated for both conferences
+        for team in conference: # for each team in the conference
+            for other_team in conference:
+                if team != other_team: # teams don't play themselves
+                    team_pair_var_set = []
+                    for day in range(180): # to get this game for every day of the season
+                        team_pair_var_set.append(var_dict[team+"_"+other_team+"_"+str(day)])
+                    if team+"_"+other_team not in no_play_list: # check that they need to play four games not 1
+                        clauses.extend(true_literal_equals_clause(team_pair_var_set,2))
+                    else: # if they're set to play only three games this season and team is the the home team for the dropped game
+                        clauses.extend(true_literal_equals_clause(team_pair_var_set,1))
     return clauses
 
 def one_game_per_team_per_day_clauses():
@@ -196,7 +217,7 @@ def schedule(solution):
                 strings[i+1] += schedule[key][i][1] + " @ " + schedule[key][i][0] + "|"
             else:
                 strings[i+1] += "          "
-    
+
     str_schedule = ""
     for string in strings:
         str_schedule  += string + "\n"
@@ -212,13 +233,14 @@ def solve():
 
     print(scheduled,file=open("./solution.txt","w+"))
     print(f"Solved at time {elapsed()} with {len(clause_list)} clauses")
-    
+
 
 def test():
+    # print(true_literal_equals_clause(range(180),2))
+
     create_clauses()
 
     solve()
 
     print(f"Finished in {elapsed()}")
-
 test()
