@@ -47,6 +47,7 @@ east_southeast_codes = [team.get_code() for team in nba.east_southeast_teams()]
 
 #list of intraconference, interdivision games that won't be played this season, home game listed first
 #this is for the 2018-2019 season
+#add generation method (previous 5 year's schedules -> current year's no_play_list)
 no_play_list = ["ATL_BKN","ATL_CLE","BKN_IND","BKN_ORL","BOS_CHI","BOS_WAS","CHA_IND","CHA_TOR","CHI_CHA","CHI_NYK","CLE_ORL","CLE_PHI","DAL_DEN","DAL_LAL","DEN_LAL","DEN_MEM","DET_ATL","DET_BKN","GSW_SAS","GSW_UTA","HOU_LAC","HOU_MIN","IND_MIA","IND_TOR","LAC_MIN","LAC_NOP","LAL_MEM","LAL_OKC","MEM_OKC","MEM_PHX","MIA_CHI","MIA_NYK","MIL_BOS","MIL_WAS","MIN_DAL","MIN_PHX","NOP_GSW","NOP_POR","NYK_CHA","NYK_CLE","OKC_GSW","OKC_SAS","ORL_BOS","ORL_MIL","PHI_MIA","PHI_MIL","PHX_HOU","PHX_POR","POR_HOU","POR_SAC","SAC_DAL","SAC_DEN","SAS_SAC","SAS_UTA","TOR_ATL","TOR_DET","UTA_LAC","UTA_NOP","WAS_DET","WAS_PHI",""]
 
 var_list = []
@@ -189,6 +190,7 @@ def true_literal_equals_clause(n_vars,k):
 # ensures at most k of the n variables in n_vars is true
 def true_literal_leq_clause(n_vars,k):
     clauses = []
+    clauses = [[(0-element) for element in comb] for comb in itertools.combinations(n_vars,(k+1))]
     for comb in itertools.combinations(n_vars,k+1): # for each combination of n-(n-k)+1 = k+1 variables, to ensure at least n-k variables are false
         clause = []
         for element in comb: # parses through the elements of the combination to build the associated clause
