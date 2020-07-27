@@ -172,6 +172,24 @@ def one_game_per_team_per_day_clauses():
             clauses.extend(true_literal_leq_clause(team_day_var_set,1)) # limiting the set to at most one can be true
     return clauses
 
+def games_in_nights_blocking_clauses(num_games, num_nights):
+    clauses = []
+    for team in codes: # for each team
+        games_on_days = [] # a list of lists, the first entry is a list of the games playable on the first day
+        for day in range(180): # since the above list is populated by day
+            games_today = [] # these are the games played by team on this day
+            for other_team in codes: # for each opponent
+                if team != other_team: # teams can't play themselves
+                    games_today.append(var_dict[team+"_"+other_team+"_"+str(day)]) # home game
+                    games_today.append(var_dict[other_team+"_"+team+"_"+str(day)]) # away game
+            games_on_days.append(games_today) # appending this todays games to the list
+        for day in range(180-num_nights+1): # every possible set of num_nights adjacent nights by the first night
+            games_to_block = [] # all the possible games team might play in that set of num_nights
+            for i in range(num_nights): # building games_to_block by day
+                games_to_block.extend(games_on_days[day+i]) # adding each nights games
+            clauses.extend(true_literal_leq_clause(games_to_block, num_games)) #adding those blocking clauses
+            
+
 # ensures exactly k of the n variables in n_vars is true
 def true_literal_equals_clause(n_vars,k):
     clauses = []
